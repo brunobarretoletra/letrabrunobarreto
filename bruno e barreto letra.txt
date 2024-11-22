@@ -1,0 +1,163 @@
+#include <stdio.h>
+
+float media (float somaN) {
+    float M;
+    M = somaN / 3;
+    return M;
+}
+
+int Aprov (float mediaN) {
+    if(mediaN >= 7) {
+        return 1;
+    }
+    return 0;
+}
+
+void arquivoP (char nomes[][50], float notas[][3], float medias[], int N) {
+    int x, y;
+    FILE *arquivo;
+    arquivo = fopen("teste.txt", "w");
+    if(arquivo == NULL) {
+        printf("Arquivo nao existe!");
+    }
+
+    for(x = 0; x < N; x++) {
+        fprintf(arquivo, "\nNOME: %s", nomes[x]);
+        for(y = 0; y < 3; y++) {
+            fprintf(arquivo, "\nNota %d: %.2f", y + 1, notas[x][y]);
+        }
+        fprintf(arquivo, "\nMedia: %.2f", medias[x]);
+        if(Aprov(medias[x])) {
+            fprintf(arquivo, "\nAluno Aprovado!");
+        } else {
+            fprintf(arquivo, "\nAluno Reprovado!");
+        }
+    }
+    fclose(arquivo);
+}
+int main() {
+
+    int n;
+
+    do{
+        printf("Digite quantos alunos terao: ");
+        scanf("%d", &n);
+    }while(n > 10);
+
+    char nome[n][50];
+    float nota[n][3], soma[n], medias[n];
+    int x, y;
+
+    for(x = 0; x < n; x++) {
+        printf("\nDigite o nome do aluno: ");
+        scanf("%s", nome[x]);
+        for(y = 0; y < 3; y++) {
+            printf("Digite %d nota do aluno: ", y+1);
+            scanf("%f", &nota[x][y]);
+            soma[x] += nota[x][y];
+        }
+    }
+
+    for(x = 0; x < 3; x++) {
+        medias[x] = media(soma[x]);
+    }
+    arquivoP(nome, nota, medias, n);
+    return 0;
+}
+=====================================================================
+#include <stdio.h>
+#include <locale.h>
+#include <string.h>
+#include <ctype.h>
+
+void busca(char pal[], char caractere);
+void minusc(char pala[], char caract);
+	
+int main() {
+	setlocale(LC_ALL,"portuguese");	
+	
+	char p[100], carac;
+	
+	do {
+		printf("Digite uma frase: ");
+		gets(p);
+	} while(strlen(p) > 100);
+	
+
+	printf("Digite um caractere para buscar na frase: ");
+	scanf("%c", &carac); 										
+	busca(p, carac);
+	return 0;
+}
+
+void minusc(char pala[], char caract){
+	int x;
+	for(x = 0; x < strlen(pala); x++){
+		pala[x] = tolower(pala[x]);		
+	}	
+	caract = tolower(caract);	
+}
+void busca(char pal[], char caractere) {
+	minusc(pal, caractere);
+	int x, ocorre = 0, indice[100] = {0};
+	for(x = 0; x < strlen(pal); x++) {
+		if(caractere == pal[x]) {
+			indice[ocorre] = x;
+			ocorre++;		
+		}	
+	}
+	printf("Caractere %c aparece: %d vezes ", caractere, ocorre);
+	for(x = 0; x < ocorre; x++){
+		if(x > 0) {
+			printf(", ");	
+		}	
+		printf("%d ", indice[x]);
+	}
+}
+=====================================================================
+#include <stdio.h>
+#include <locale.h>
+float mediaAluno(float soma) {
+    return soma / 3;
+}
+float mediaGeral(float somas, int quantA) {
+    return somas / quantA;
+}
+int main() {
+    setlocale(LC_ALL,"portuguese");
+
+    int a, m, x, y, z;
+    printf("Digite o numero de alunos: ");
+    scanf("%d", &a);
+    printf("Digite o numero de materias: ");
+    scanf("%d", &m);
+    float nota[a][m][3];
+    float somaA[a][m] , media[m] ;
+    for(x = 0; x < a; x++) {
+        printf("\n%d Aluno ", x + 1);
+        for(y = 0; y < m; y++) {
+            printf("\n%d Materia ", y + 1);
+            for(z = 0; z < 3; z++) {
+                printf("\nDigite a %d nota: ", z + 1);
+                scanf("%f", &nota[x][y][z]);
+                somaA[x][y] += nota[x][y][z];
+            }
+            somaA[x][y] = mediaAluno(somaA[x][y]);
+        }
+    }
+    for(y = 0; y < m; y++){
+        for(x = 0; x < a; x++){
+            media[y] += somaA[x][y];
+        }
+        media[y] = mediaGeral(media[y], a);
+    }
+    for(y = 0; y < m; y++) {
+        if(media[y] >= 7.0){
+             printf("A turma na materia esta Aprovada!!\n");
+        }else{
+            printf("A turma na materia esta Reprovada!!\n");
+        }
+        printf("Media da Mataria %d: %.2f\n", y + 1, media[y]);
+    }
+    return 0;
+}
